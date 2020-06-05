@@ -18,6 +18,7 @@ class CreatePerkiraansTable extends Migration
             $table->string('nama_perkiraan',100);
             $table->foreignId('rekening_id');
             $table->timestamps();
+            $table->softDeletes();
 
             #ADD FOREIGN KEY
             $table->foreign('rekening_id')->references('id')->on('rekenings');

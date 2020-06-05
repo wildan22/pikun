@@ -19,6 +19,8 @@ class CreateJenisTransaksisTable extends Migration
             $table->string('keterangan1',100);
             $table->string('keterangan2',100);
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 

@@ -19,6 +19,7 @@ class CreateMappingsTable extends Migration
             $table->foreignId('rekening_id');
             $table->enum('tipe',['D','K']);
             $table->timestamps();
+            $table->softDeletes();
 
             #ADD FOREIGN KEY
             $table->foreign('rekening_id')->references('id')->on('rekenings');

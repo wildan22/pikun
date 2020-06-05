@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRekeningsTable extends Migration
+class CreateJurnalDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateRekeningsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rekenings', function (Blueprint $table) {
+        Schema::create('jurnal_details', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_rekening');
-            $table->enum('tipe',['D','K']);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +26,6 @@ class CreateRekeningsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rekenings');
+        Schema::dropIfExists('jurnal_details');
     }
 }

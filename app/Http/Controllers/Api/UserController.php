@@ -11,12 +11,15 @@ use App\Perusahaan;
 
 class UserController extends Controller
 {
+
+    /**GET CURRENT USER */
     public function me(){
         $user = auth()->user();
 
         return new UserResource($user);
     }
 
+    /**UPDATE USER INFO */
     public function updateInfo(Request $request){
         $this->validate($request,[
             'name' => 'required|min:3'
@@ -31,6 +34,7 @@ class UserController extends Controller
         ]);
     }
 
+    /**CLOSE USER ACCOUNT */
     public function closeAccount(){
         $closeaccount = User::find(auth()->user()->id);
         $closeaccount->delete();
@@ -40,6 +44,8 @@ class UserController extends Controller
         ]);
     }
 
+
+    
     public function addPerusahaan(Request $request){
         $this->validate($request,[
             'nama_perusahaan'=>'required|min:3',

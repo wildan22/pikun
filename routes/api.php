@@ -14,11 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/* AUTHENTICATION ROUTES */
 Route::post('register','Api\RegisterController@action');
 Route::post('login','Api\LoginController@action');
 Route::get('me','Api\UserController@me')->middleware('auth:api');
 Route::post('updateinfo','Api\UserController@updateInfo')->middleware('auth:api');
-Route::post('closeaccount','Api\UserController@closeAccount')->middleware('auth:api');
+Route::delete('closeaccount','Api\UserController@closeAccount')->middleware('auth:api');
 
 //Perusahaan Routes
 Route::post('tambahperusahaan','Api\UserController@addPerusahaan')->middleware('auth:api');
@@ -41,6 +42,11 @@ Route::delete('perkiraan','Api\PerkiraanController@hapusPerkiraan')->middleware(
 Route::get('mapping','Api\MappingController@get')->middleware('auth:api');
 
 
+/**JURNAL ROUTES */
+Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:api');
+
+/*
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/
