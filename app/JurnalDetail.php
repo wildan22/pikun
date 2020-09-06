@@ -9,5 +9,11 @@ class JurnalDetail extends Model
 {
     use SoftDeletes;
 
-    
+    protected $fillable = [
+        'perkiraan','jumlah', 'jurnal_id','tipe',
+    ];
+
+    public function Jurnal(){
+        return $this->belongsTo('App\Jurnal','jurnal_id','id');
+    }
 }

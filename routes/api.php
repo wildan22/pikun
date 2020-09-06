@@ -44,6 +44,10 @@ Route::get('mapping','Api\MappingController@get')->middleware('auth:api');
 
 /**JURNAL ROUTES */
 Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:api');
+Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middleware('auth:api');
+
+Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');;
+
 
 /*
 Route::middleware('auth:api')->get('/user', function (Request $request) {

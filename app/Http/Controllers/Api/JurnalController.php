@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Jurnal;
+use App\JurnalDetail;
+use Auth;
+use PDF;
 
 class JurnalController extends Controller
 {
@@ -27,10 +30,58 @@ class JurnalController extends Controller
             'keterangan'=>$request->keterangan,
             'jumlah'=>$request->jumlah
         ]);
-
+        if($add){
+            #Menambahkan Perkiraan Pertama
+            $tambahkredit = JurnalDetail::create([
+                'perkiraan' => $request->perkiraan1_id,
+                'jumlah'=>$request->jumlah,
+                'jurnal_id'=> $add->id,
+                'tipe' => "K"
+            ]);
+            $tambahkredit = JurnalDetail::create([
+                'perkiraan' => $request->perkiraan2_id,
+                'jumlah'=>$request->jumlah,
+                'jurnal_id'=> $add->id,
+                'tipe' => "D"
+            ]);
+        }
         return response()->json([
             "success"=>True,
             "data"=>$add
         ],201);
+    }
+
+
+    public function showJurnalList(Request $request){
+        $this->validate($request,[
+            'month'=>'required|min:1|integer',
+            'year'=>'required|min:4|integer'
+        ]);
+        $jurnalList = Jurnal::where('user_id',auth()->user()->id)
+                    ->whereYear('tanggal','=',$request->year)
+                    ->whereMonth('tanggal','=',$request->month)
+                    ->get();
+        return response()->json([
+            "success"=>True,
+            "data"=>$jurnalList
+        ],200);
+    }
+
+    public function generateJurnalPDF(Request $request){
+        $this->validate($request,[
+            'month'=>'required|min:1|integer',
+            'year'=>'required|min:4|integer'
+        ]);
+        $jurnalList = Jurnal::where('user_id',auth()->user()->id)
+                    ->whereYear('tanggal','=',$request->year)
+                    ->whereMonth('tanggal','=',$request->month)
+                    ->get();
+
+        view()->share('jurnal',$jurnalList);
+        $pdf = PDF::loadView('jurnal_report', $data);
+
+        // download PDF file with download method
+        return $pdf->download('jurnal_report.pdf');
+
     }
 }

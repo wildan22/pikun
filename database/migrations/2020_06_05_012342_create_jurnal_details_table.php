@@ -15,7 +15,15 @@ class CreateJurnalDetailsTable extends Migration
     {
         Schema::create('jurnal_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('perkiraan');
+            $table->integer('jumlah')->unsigned();
+            $table->foreignId('jurnal_id');
+            $table->enum('tipe', array('D', 'K'));
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('perkiraan')->references('id')->on('perkiraans');
+            $table->foreign('jurnal_id')->references('id')->on('jurnals');
         });
     }
 
