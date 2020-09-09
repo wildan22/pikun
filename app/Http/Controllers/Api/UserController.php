@@ -45,7 +45,7 @@ class UserController extends Controller
     }
 
 
-    
+
     public function addPerusahaan(Request $request){
         $this->validate($request,[
             'nama_perusahaan'=>'required|min:3',
@@ -62,7 +62,18 @@ class UserController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        return $add;
+        if($add){
+            $res['success'] = true;
+            $res['message']="Perusahaan Berhasil Ditambahkan";
+            $res['data'] = $add;
+        }
+        else{
+            $res['success'] = false;
+            $res['message']="Perusahaan Gagal Ditambahkan";
+        }
+
+
+        return $res;
     }
 
     public function editDataPerusahaan(Request $request){
@@ -72,9 +83,9 @@ class UserController extends Controller
             'alamat' => 'required|min:3',
             'telepon' => 'required|min:10',
             'email' => 'required|email|min:3',
-            
+
         ]);
-        
+
         $updateperusahaan = Perusahaan::find($request->id);
         $updateperusahaan->where('user_id',auth()->user()->id);
         $updateperusahaan->nama_perusahaan = $request->nama_perusahaan;

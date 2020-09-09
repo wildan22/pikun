@@ -12,9 +12,15 @@ class JenisTransaksiController extends Controller
 {
     public function getAllJenisTransaksi(){
         $all = JenisTransaksi::all();
+        if($all){
+            $res['success'] = true;
+            return (new JenisTransaksiCollection($all))->additional($res);
+        }
+        else{
+            $res['success'] = false;
+            return $res;
+        }
 
-        return new JenisTransaksiCollection($all);
-        #return (new JenisTransaksiResource($all));
-        #return $all;
+
     }
 }

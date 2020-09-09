@@ -14,12 +14,23 @@ class PerkiraanController extends Controller
         return $all;
     }
 
+    public function getPerkiraanBasedRekening($rekid){
+        $perkiraan = Perkiraan::where('rekening_id',$rekid)->get();
+
+        if($perkiraan){
+            $res['success'] = true;
+            $res['data'] = $perkiraan;
+            return $res;
+        }
+        $res['success'] = false;
+    }
+
     public function addPerkiraan(Request $request){
         $this->validate($request,[
             'nama_perkiraan'=>'required|min:3',
             'rekening_id'=>'required|min:1'
         ]);
-        
+
         $add = Perkiraan::create([
             'nama_perkiraan' => $request->nama_perkiraan,
             'rekening_id' => $request->rekening_id

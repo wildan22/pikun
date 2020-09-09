@@ -8,6 +8,7 @@ use App\Jurnal;
 use App\JurnalDetail;
 use Auth;
 use PDF;
+use DB;
 
 class JurnalController extends Controller
 {
@@ -57,31 +58,19 @@ class JurnalController extends Controller
             'month'=>'required|min:1|integer',
             'year'=>'required|min:4|integer'
         ]);
-        $jurnalList = Jurnal::where('user_id',auth()->user()->id)
-                    ->whereYear('tanggal','=',$request->year)
-                    ->whereMonth('tanggal','=',$request->month)
-                    ->get();
+
+        $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
+                                FROM jurnals
+                                INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
+                                INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
+                                WHERE user_id=?
+                                AND MONTH(tanggal)=?
+                                AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
+
         return response()->json([
             "success"=>True,
             "data"=>$jurnalList
         ],200);
     }
 
-    public function generateJurnalPDF(Request $request){
-        $this->validate($request,[
-            'month'=>'required|min:1|integer',
-            'year'=>'required|min:4|integer'
-        ]);
-        $jurnalList = Jurnal::where('user_id',auth()->user()->id)
-                    ->whereYear('tanggal','=',$request->year)
-                    ->whereMonth('tanggal','=',$request->month)
-                    ->get();
-
-        view()->share('jurnal',$jurnalList);
-        $pdf = PDF::loadView('jurnal_report', $data);
-
-        // download PDF file with download method
-        return $pdf->download('jurnal_report.pdf');
-
-    }
 }

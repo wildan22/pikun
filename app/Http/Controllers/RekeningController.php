@@ -9,7 +9,11 @@ class RekeningController extends Controller
 {
     public function get(){
         $all = Rekening::all();
-
-        return $all;
+        if($all){
+            $res['success'] = true;
+            $res['data'] = $all;
+            return $res;
+        }
+        $res['success'] = false;
     }
 }
