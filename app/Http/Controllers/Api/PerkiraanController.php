@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Perkiraan;
+use App\Mapping;
+use App\Rekening;
 
 class PerkiraanController extends Controller
 {
@@ -49,5 +51,18 @@ class PerkiraanController extends Controller
         $hapus->delete();
 
         return $hapus;
+    }
+
+    public function getPerkiraanList(){
+        $perkiraanlist = [];
+        $map = Rekening::all();
+        foreach ($map as $m) {
+            $perkiraan = Perkiraan::where('rekening_id',$m->id)->get();
+            $perkiraanlist[] = [
+                "rekening" => $m->nama_rekening ."(".$m->tipe.")",
+                "data" => $perkiraan,
+            ];
+        }
+        return $perkiraanlist;
     }
 }

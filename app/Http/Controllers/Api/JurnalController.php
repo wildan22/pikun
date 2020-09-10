@@ -59,10 +59,16 @@ class JurnalController extends Controller
             'year'=>'required|min:4|integer'
         ]);
 
-        $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
+        // $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
+        //                         FROM jurnals
+        //                         INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
+        //                         INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
+        //                         WHERE user_id=?
+        //                         AND MONTH(tanggal)=?
+        //                         AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
+
+        $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id
                                 FROM jurnals
-                                INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
-                                INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
                                 WHERE user_id=?
                                 AND MONTH(tanggal)=?
                                 AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
@@ -71,6 +77,18 @@ class JurnalController extends Controller
             "success"=>True,
             "data"=>$jurnalList
         ],200);
+    }
+
+    public function showSpecificJurnal($id){
+        #$specificJurnal =
+    }
+
+    public function showSpecificJurnalDetail($id){
+        $specificJurnalDetail = JurnalDetail::all();
+
+        #$result =
+
+        return $specificJurnalDetail;
     }
 
 }

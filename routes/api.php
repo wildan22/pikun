@@ -35,7 +35,7 @@ Route::get('rekening','RekeningController@get')->middleware('auth:api');
 
 //Perkiraan Routes
 //Get All
-Route::get('perkiraan','Api\PerkiraanController@get')->middleware('auth:api');
+Route::get('perkiraan','Api\PerkiraanController@getPerkiraanList')->middleware('auth:api');
 //Get Limited
 Route::get('perkiraan/{id}','Api\PerkiraanController@getPerkiraanBasedRekening')->middleware('auth:api');
 Route::post('perkiraan','Api\PerkiraanController@addPerkiraan')->middleware('auth:api');
@@ -46,12 +46,16 @@ Route::delete('perkiraan','Api\PerkiraanController@hapusPerkiraan')->middleware(
 Route::get('mapping','Api\MappingController@get')->middleware('auth:api');
 
 
+
+
+
 /**JURNAL ROUTES */
 Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:api');
 Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middleware('auth:api');
 
 Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');;
 
+Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');;
 
 /*
 Route::middleware('auth:api')->get('/user', function (Request $request) {
