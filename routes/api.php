@@ -43,7 +43,7 @@ Route::delete('perkiraan','Api\PerkiraanController@hapusPerkiraan')->middleware(
 
 
 //Mapping Routes
-Route::get('mapping','Api\MappingController@get')->middleware('auth:api');
+Route::get('mapping/{id}','Api\MappingController@get')->middleware('auth:api');
 
 
 
@@ -52,10 +52,11 @@ Route::get('mapping','Api\MappingController@get')->middleware('auth:api');
 /**JURNAL ROUTES */
 Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:api');
 Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middleware('auth:api');
+Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');
+Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
 
-Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');;
-
-Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');;
+/** TAMBAH JURNAL MANUAL */
+Route::POST('jurnal/manual/create','Api\JurnalController@insertManualJurnal')->middleware('auth:api');
 
 /*
 Route::middleware('auth:api')->get('/user', function (Request $request) {

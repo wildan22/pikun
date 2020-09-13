@@ -102,11 +102,21 @@ class UserController extends Controller
         $this->validate($request,[
             'id'=>'required|min:1'
         ]);
-        $deleteperusahaan = Perusahaan::find($request->id);
-        $deleteperusahaan->where('user_id',auth()->user()->id);
-        $deleteperusahaan->delete();
+        $count = Perusahaan::where("id",$request->id)->where('user_id',auth()->user()->id)->get();
+        if($count == "[]"){
+            $res['succcess'] = false;
+            $res['message'] = "Data Perusahaan Tidak Ditemukan";
 
-        return $deleteperusahaan;
+            return $res;
+        }
+        else{
+            $delete = Perusahaan::find($request->id)->delete();
+            $res['succcess'] = true;
+            $res['message'] = "Perusahaan Berhasil Dihapus";
+            $res['data'] = $count;
+            return $res;
+        }
+
     }
 
     public function getDaftarPerusahaan(){

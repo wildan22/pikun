@@ -91,4 +91,33 @@ class JurnalController extends Controller
         return $specificJurnalDetail;
     }
 
+
+    public function insertManualJurnal(Request $request){
+        $this->validate($request,[
+            'tanggal'=>'required',
+            'nama_transaksi' => 'required',
+            'detail_jurnal'=>'required',
+            'keterangan' => 'required',
+            'jumlah' => 'required'
+        ]);
+
+
+        // foreach($request->detail_jurnal as $dj){
+        //     $mydata = [
+        //         ""
+        //     ]
+        //     print($dj);
+        // }
+
+        $savejurnal = Jurnal::create([
+            'tanggal'=>$request->tanggal,
+            'user_id' => auth()->user()->id,
+            'keterangan'=>$request->keterangan ,
+            'jumlah'=>$request->jumlah
+        ]);
+
+
+
+    }
+
 }

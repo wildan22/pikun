@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Jurnal;
 use App\JurnalDetail;
 use DB;
 use Auth;
 use PDF;
-ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 class JurnalDetailController extends Controller
 {
     public function generateJurnalPDF(Request $request){
@@ -30,4 +30,6 @@ class JurnalDetailController extends Controller
         $pdf = PDF::loadview('jurnal_report',['jurnal'=>$jurnalDetailList]);
     	return $pdf->download('Jurnal_report.pdf');
     }
+
+
 }
