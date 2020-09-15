@@ -45,6 +45,11 @@ Route::delete('perkiraan','Api\PerkiraanController@hapusPerkiraan')->middleware(
 //Mapping Routes
 Route::get('mapping/{id}','Api\MappingController@get')->middleware('auth:api');
 
+    //Double Query
+    Route::get('mapping/kredit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
+    Route::get('mapping/debit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
+
+
 
 
 
@@ -58,8 +63,3 @@ Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')-
 /** TAMBAH JURNAL MANUAL */
 Route::POST('jurnal/manual/create','Api\JurnalController@insertManualJurnal')->middleware('auth:api');
 
-/*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/

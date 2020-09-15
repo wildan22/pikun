@@ -61,5 +61,43 @@ class MappingController extends Controller
 
     }
 
+    public function getRekeningKredit($transaksi_id){
+        $rekeningkredit = [];
+        $mappingkredit = Mapping::where('transaksi_id', $transaksi_id)->where('tipe', 'K')->get();
+        foreach ($mappingkredit as $m) {
+            $rekening = Rekening::find($m->rekening_id);
+            $rekeningkredit[] = [
+                "rekening" => $m->rekening->nama_rekening,
+                "data" => new RekeningCollection($rekening->perkiraan),
+            ];
+        }
+
+
+        return response()->json([
+            "data" => $rekeningkredit,
+            "success"=>true,
+        ]);
+
+    }
+
+    public function getRekeningDebit($transaksi_id){
+        $rekeningdebit = [];
+        $mappingdebit = Mapping::where('transaksi_id', $transaksi_id)->where('tipe', 'D')->get();
+        foreach ($mappingdebit as $m) {
+            $rekening = Rekening::find($m->rekening_id);
+            $rekeningdebit[] = [
+                "rekening" => $m->rekening->nama_rekening,
+                "data" => new RekeningCollection($rekening->perkiraan),
+            ];
+        }
+
+
+        return response()->json([
+            "data" => $rekeningdebit,
+            "success"=>true,
+        ]);
+
+    }
+
 
 }

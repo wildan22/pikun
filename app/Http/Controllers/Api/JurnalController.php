@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Jurnal;
 use App\JurnalDetail;
+use App\Perkiraan;
 use Auth;
 use PDF;
 use DB;
@@ -79,16 +80,29 @@ class JurnalController extends Controller
         ],200);
     }
 
-    public function showSpecificJurnal($id){
-        #$specificJurnal =
+    public function showSpecificJurnalDetail($id){
+        $specificJurnalDetail = JurnalDetail::where('jurnal_id',$id)->get();
+        if($specificJurnalDetail != "[]"){
+            $res['success'] = true;
+            $res['message'] = "Data Berhasil Diambil";
+            $res['tanggal'] = $specificJurnalDetail[0]->Jurnal['tanggal'];
+            $res['nama_transaksi'] = $specificJurnalDetail[0]->Jurnal['keterangan'];
+            $res['data'] = $specificJurnalDetail;
+            return response($res,200);
+        }
+        else{
+            $res['success'] = false;
+            $res['message'] = "Data Gagal Diambil";
+            return response($res,400);
+        }
     }
 
-    public function showSpecificJurnalDetail($id){
-        $specificJurnalDetail = JurnalDetail::all();
+    public function getRekeningId($perkiraan_id){
 
-        #$result =
-
-        return $specificJurnalDetail;
+        if($perkiraan != "[]"){
+            return $this->$perkiraan->rekening_id;
+        }
+        return null;
     }
 
 
@@ -100,15 +114,10 @@ class JurnalController extends Controller
             'keterangan' => 'required',
             'jumlah' => 'required'
         ]);
+        $nominaldebit = 0;
+        $nominalkredit = 0;
 
-
-        // foreach($request->detail_jurnal as $dj){
-        //     $mydata = [
-        //         ""
-        //     ]
-        //     print($dj);
-        // }
-
+        //CREATE JURNAL
         $savejurnal = Jurnal::create([
             'tanggal'=>$request->tanggal,
             'user_id' => auth()->user()->id,
@@ -116,8 +125,66 @@ class JurnalController extends Controller
             'jumlah'=>$request->jumlah
         ]);
 
+        if($savejurnal != "[]"){
+            foreach($request->detail_jurnal as $key => $value){
+                if($request->detail_jurnal[$key]['tipe'] == "D"){
+                    $nominaldebit = $nominaldebit + $request->detail_jurnal[$key]['jumlah'];
+                }
+                else if($request->detail_jurnal[$key]['tipe'] == "K"){
+                    $nominalkredit = $nominalkredit + $request->detail_jurnal[$key]['jumlah'];
+                }
+                $detailJurnal[] =[
+                    'perkiraan' => $request->detail_jurnal[$key]['kode_perkiraan'],
+                    'jumlah' => $request->detail_jurnal[$key]['jumlah'],
+                    'tipe' => $request->detail_jurnal[$key]['tipe'],
+                    'jurnal_id' => $savejurnal->id,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=> date('Y-m-d H:i:s')
+                ];
+            }
+
+            //MENGECEK APAKAH JURNAL BALANCE
+            if($nominaldebit == $nominalkredit){
+                $insertRes = JurnalDetail::insert($detailJurnal);
+                if($insertRes == true){
+                    //Mengecek apakah jurnal berisi 2 data (untuk dibuat jurnal otomatisnya)
+                    if(count($detailJurnal) == 2){
+                        $update = Jurnal::find($savejurnal->id);
+
+                        //Mencari Kode Rekening Perkiraan ke 1
+                        $perkiraan = Perkiraan::firstWhere('id',$request->detail_jurnal[0]['kode_perkiraan']);
+                        $perkiraan1_id = $perkiraan->rekening_id;
+                        //Mencari Kode Rekening Perkiraan Ke 2
+                        $perkiraan = Perkiraan::firstWhere('id',$request->detail_jurnal[1]['kode_perkiraan']);
+                        $perkiraan2_id = $perkiraan->rekening_id;
 
 
+                        #$update->perkiraan1_id = ;
+                        #$update->perkiraan2_id = $request->detail_jurnal[1]['kode_perkiraan'];
+                    }
+                    $res['success'] = true;
+                    $res['message'] = "Jurnal Berhasil Ditambahkan";
+                    return $res;
+                }
+                else{
+                    $res['success'] = false;
+                    $res['message'] = "Jurnal Gagal Ditambahkan";
+                    return $res;
+                }
+            }
+            else{
+                $res['success'] = false;
+                $res['message'] = "Jurnal Tidak Balance";
+                return $res;
+            }
+
+
+        }
+        else{
+            $res['success'] = false;
+            $res['message'] = "Jurnal Gagal Ditambahkan";
+            return $res;
+        }
     }
 
 }
