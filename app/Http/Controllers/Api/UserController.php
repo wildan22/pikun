@@ -22,11 +22,21 @@ class UserController extends Controller
     /**UPDATE USER INFO */
     public function updateInfo(Request $request){
         $this->validate($request,[
-            'name' => 'required|min:3'
+            'name' => 'required|min:3',
+
+            //Data Perusahaan
+            'nama_perusahaan' => 'required|min:3',
+            'alamat_perusahaan' => 'required|min:3',
+            'telepon_perusahaan' => 'required|min:3',
+            'email_perusahaan' => 'required|min:3|email'
         ]);
 
         $updateuser = User::find(auth()->user()->id);
         $updateuser->name = $request->name;
+        $updateuser->nama_perusahaan = $request->nama_perusahaan;
+        $updateuser->alamat_perusahaan = $request->alamat_perusahaan;
+        $updateuser->telepon_perusahaan = $request->telepon_perusahaan;
+        $updateuser->email_perusahaan = $request->email_perusahaan;
         $updateuser->save();
 
         return (new UserResource($updateuser))->additional([

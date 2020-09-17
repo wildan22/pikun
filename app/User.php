@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    
+
     use Notifiable;
     use SoftDeletes;
     /**
@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','api_token'
+        'name', 'email', 'password','api_token','nama_perusahaan','alamat_perusahaan','telepon_perusahaan','email_perusahaan'
     ];
 
     /**
@@ -29,6 +29,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
 
     /**
      * The attributes that should be cast to native types.

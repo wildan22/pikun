@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
-    
+
     /**
      * Run the migrations.
      *
@@ -19,12 +19,16 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('nama_perusahaan')->default('-');
+            $table->string('alamat_perusahaan')->default('-');
+            $table->string('telepon_perusahaan')->default('-');
+            $table->string('email_perusahaan')->default('-');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
-            
+
         });
     }
 
