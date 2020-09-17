@@ -45,9 +45,9 @@ Route::delete('perkiraan','Api\PerkiraanController@hapusPerkiraan')->middleware(
 //Mapping Routes
 Route::get('mapping/{id}','Api\MappingController@get')->middleware('auth:api');
 
-    //Double Query
-    Route::get('mapping/kredit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
-    Route::get('mapping/debit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
+//Double Query
+Route::get('mapping/kredit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
+Route::get('mapping/debit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
 
 
 
@@ -59,6 +59,9 @@ Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:
 Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middleware('auth:api');
 Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');
 Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
+
+Route::POST('jurnal/list','Api\JurnalController@showJurnalReportAndroidJson')->middleware('auth:api');
+
 
 /** TAMBAH JURNAL MANUAL */
 Route::POST('jurnal/manual/create','Api\JurnalController@insertManualJurnal')->middleware('auth:api');

@@ -80,6 +80,16 @@ class JurnalController extends Controller
         ],200);
     }
 
+    public function showJurnalReportAndroidJson(Request $request){
+        $collection = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,MONTH(jurnals.tanggal) as month
+                    FROM jurnals
+                    WHERE user_id=?
+                    AND MONTH(tanggal)=?
+                    AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
+
+        return collect($collection)->groupBy('month')->all();
+    }
+
     public function showSpecificJurnalDetail($id){
         $specificJurnalDetail = JurnalDetail::where('jurnal_id',$id)->get();
         if($specificJurnalDetail != "[]"){
