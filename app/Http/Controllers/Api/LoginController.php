@@ -21,10 +21,12 @@ class LoginController extends Controller
             return (new UserResource($currentUser))->additional([
                 'meta'=>[
                     'token' => $currentUser->api_token
-                ]
+                ],
+                'success' => true
             ]);
         }
         return response()->json([
+            'success' => false,
             'error' => 'Username/password tidak Cocok'
         ],401);
     }

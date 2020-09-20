@@ -60,7 +60,13 @@ Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middlew
 Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');
 Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
 
-Route::POST('jurnal/list','Api\JurnalController@showJurnalReportAndroidJson')->middleware('auth:api');
+
+/**REPORT ROUTES */
+Route::POST('report/jurnal/view','Api\JurnalController@showJurnalReportAndroidJson')->middleware('auth:api');
+Route::POST('report/bukubesar/view','Api\LaporanController@showBukuBesarJson')->middleware('auth:api');
+Route::POST('report/neracasaldo/view','Api\LaporanController@showNeracaSaldo')->middleware('auth:api');
+Route::POST('report/labarugi/view','Api\LaporanController@showLabaRugi')->middleware('auth:api');
+
 
 
 /** TAMBAH JURNAL MANUAL */

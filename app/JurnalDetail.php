@@ -16,4 +16,8 @@ class JurnalDetail extends Model
     public function Jurnal(){
         return $this->belongsTo('App\Jurnal','jurnal_id','id');
     }
+
+    public function Perkiraan(){
+        return $this->belongsTo('App\Perkiraan','perkiraan','id');
+    }
 }
