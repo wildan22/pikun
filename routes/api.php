@@ -47,7 +47,7 @@ Route::get('mapping/{id}','Api\MappingController@get')->middleware('auth:api');
 
 //Double Query
 Route::get('mapping/kredit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
-Route::get('mapping/debit/{id}','Api\MappingController@getRekeningKredit')->middleware('auth:api');
+Route::get('mapping/debit/{id}','Api\MappingController@getRekeningDebit')->middleware('auth:api');
 
 
 

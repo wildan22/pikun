@@ -65,22 +65,40 @@ class MappingController extends Controller
         $rekeningkredit = [];
         $mappingkredit = Mapping::where('transaksi_id', $transaksi_id)->where('tipe', 'K')->get();
         foreach ($mappingkredit as $m) {
-            $rekening = Rekening::find($m->rekening_id);
-            $rekeningkredit[] = [
-                "rekening" => $m->rekening->nama_rekening,
-                "data" => new RekeningCollection($rekening->perkiraan),
-            ];
+            $perkiraan = Perkiraan::where('rekening_id',$m->rekening_id)->get();
+            foreach($perkiraan as $p){
+                $rekeningkredit[] = [
+                    "id" => $p->id,
+                    "nama_perkiraan"=>$p->nama_perkiraan
+                ];
+            }
         }
-
-
         return response()->json([
             "data" => $rekeningkredit,
+            "success"=>true,
+        ]);
+    }
+
+    public function getRekeningDebit($transaksi_id){
+        $rekeningdebit = [];
+        $mappingdebit = Mapping::where('transaksi_id', $transaksi_id)->where('tipe', 'D')->get();
+        foreach ($mappingdebit as $m) {
+            $perkiraan = Perkiraan::where('rekening_id',$m->rekening_id)->get();
+            foreach($perkiraan as $p){
+                $rekeningdebit[] = [
+                    "id" => $p->id,
+                    "nama_perkiraan"=>$p->nama_perkiraan
+                ];
+            }
+        }
+        return response()->json([
+            "data" => $rekeningdebit,
             "success"=>true,
         ]);
 
     }
 
-    public function getRekeningDebit($transaksi_id){
+    public function getRekeningDebitFullFormated($transaksi_id){
         $rekeningdebit = [];
         $mappingdebit = Mapping::where('transaksi_id', $transaksi_id)->where('tipe', 'D')->get();
         foreach ($mappingdebit as $m) {
