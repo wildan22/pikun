@@ -62,7 +62,7 @@ Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')-
 
 
 /**REPORT ROUTES */
-Route::POST('report/jurnal/view','Api\JurnalController@showJurnalReportAndroidJson')->middleware('auth:api');
+Route::POST('report/jurnal/view','Api\LaporanController@showJurnalReportAndroidJson')->middleware('auth:api');
 Route::POST('report/bukubesar/view','Api\LaporanController@showBukuBesarJson')->middleware('auth:api');
 Route::POST('report/neracasaldo/view','Api\LaporanController@showNeracaSaldo')->middleware('auth:api');
 Route::POST('report/labarugi/view','Api\LaporanController@showLabaRugi')->middleware('auth:api');

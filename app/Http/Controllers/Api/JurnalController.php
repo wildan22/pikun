@@ -81,63 +81,7 @@ class JurnalController extends Controller
         ],200);
     }
 
-    public function showJurnalReportAndroidJson(Request $request){
-        $this->validate($request,[
-            'month'=>'required|min:1|integer',
-            'year'=>'required|min:4|integer'
-        ]);
 
-        $collection = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,MONTH(jurnals.tanggal) as month
-                    FROM jurnals
-                    WHERE user_id=?
-                    AND MONTH(tanggal)=?
-                    AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
-        $res =[];
-        $totaldebit = 0;
-        $totalkredit = 0;
-        if($collection){
-            foreach($collection as $c){
-                $jurnaldetail = [];
-                $jurnalDetail= JurnalDetail::where('jurnal_id',$c->id)->with('Perkiraan')->get();
-                foreach($jurnalDetail as $jd){
-                    $jurnaldetail[] = [
-                        'jumlah' => $jd->jumlah,
-                        'jenis' => $jd->tipe,
-                        'perkiraan' => $jd->Perkiraan->nama_perkiraan,
-                    ];
-                    if($jd->tipe == "D"){
-                        $totaldebit += $jd->jumlah;
-                    }
-                    else if($jd->tipe == "K"){
-                        $totalkredit += $jd->jumlah;
-                    }
-                }
-                $monthNum = $c->month;
-                $dateObj   = DateTime::createFromFormat('!m', $monthNum);
-                $monthName = $dateObj->format('F');
-                $res[] = [
-                    'id' => $c->id,
-                    'tanggal' => $c->tanggal,
-                    'bulan' => $monthName,
-                    'nama_transaksi' => $c->keterangan,
-                    'jurnal_detail' => $jurnaldetail
-                ];
-                $message = "Data Berhasil Didapatkan";
-            }
-
-        }
-        else{
-            $message = "Data Jurnal Kosong";
-        }
-        return response()->json([
-            "success"=>True,
-            "data"=>collect($res)->groupBy('bulan')->all(),
-            "totaldebit"=>$totaldebit,
-            "totalkredit"=>$totalkredit,
-            "message"=>$message
-        ],200);
-
-    }
 
     public function showSpecificJurnalDetail($id){
         $specificJurnalDetail = JurnalDetail::where('jurnal_id',$id)->get();
