@@ -61,6 +61,7 @@ Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middle
 Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
 
 
+
 /**REPORT ROUTES */
 Route::POST('report/jurnal/view','Api\LaporanController@showJurnalReportAndroidJson')->middleware('auth:api');
 Route::POST('report/bukubesar/view','Api\LaporanController@showBukuBesarJson')->middleware('auth:api');

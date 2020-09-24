@@ -47,11 +47,19 @@ class JurnalController extends Controller
                 'jurnal_id'=> $add->id,
                 'tipe' => "D"
             ]);
+            return response()->json([
+                "success"=>True,
+                "data"=>$add
+            ],201);
+        }else{
+            $delete = Jurnal::find($add->id);
+            $delete->delete();
+            return response()->json([
+                "success"=>False,
+                "data"=>[]
+            ],201);
         }
-        return response()->json([
-            "success"=>True,
-            "data"=>$add
-        ],201);
+
     }
 
 
@@ -69,16 +77,32 @@ class JurnalController extends Controller
         //                         AND MONTH(tanggal)=?
         //                         AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
 
-        $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id
+        $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
                                 FROM jurnals
+                                INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
+                                INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
                                 WHERE user_id=?
                                 AND MONTH(tanggal)=?
-                                AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
+                                AND YEAR(tanggal)=?
+                                ORDER BY tanggal',[auth()->user()->id,$request->month,$request->year]);
 
-        return response()->json([
-            "success"=>True,
-            "data"=>$jurnalList
-        ],200);
+        foreach($jurnalList as $jl){
+            $data[] = [
+                "tanggal"=>$jl->tanggal,
+                "keterangan"=>$jl->keterangan,
+                "jumlah"=>$jl->jumlah,
+                "perkiraan1"=>$jl->perkiraan1,
+                "perkiraan2"=>$jl->perkiraan2
+            ];
+
+        }
+
+        return response()->json($data,200);
+
+        // return response()->json([
+        //     "success"=>True,
+        //     "data"=>$jurnalList
+        // ],200);
     }
 
 
