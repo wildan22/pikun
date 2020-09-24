@@ -65,24 +65,17 @@ class JurnalController extends Controller
 
     public function showJurnalList(Request $request){
         $this->validate($request,[
-            'month'=>'required|min:1|integer',
+            'month'=>'required|min:3',
             'year'=>'required|min:4|integer'
         ]);
         $data = [];
-        // $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
-        //                         FROM jurnals
-        //                         INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
-        //                         INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
-        //                         WHERE user_id=?
-        //                         AND MONTH(tanggal)=?
-        //                         AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
 
         $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
                                 FROM jurnals
                                 INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
                                 INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
                                 WHERE user_id=?
-                                AND MONTH(tanggal)=?
+                                AND MONTHNAME(tanggal)=?
                                 AND YEAR(tanggal)=?
                                 ORDER BY tanggal',[auth()->user()->id,$request->month,$request->year]);
 
