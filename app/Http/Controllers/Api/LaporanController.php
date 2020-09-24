@@ -172,6 +172,7 @@ class LaporanController extends Controller
     //Menampilkan Laporan Laba Rugi untuk digunakan pada android
     public function showLabaRugi(Request $request){
         $this->validate($request,[
+            'month'=>'required|min:3',
             'year'=>'required|min:4|integer',
         ]);
 
@@ -247,10 +248,9 @@ class LaporanController extends Controller
 
         return response()->json([
             "success"=>True,
-            "data"=>collect($json)->all(),
+            $request->month=>collect($json)->all(),
             "text"=>"Laba/Rugi Bersih",
             "total_keseluruhan"=>$totalkeseluruhan,
-            #"message"=>$message
         ],200);
     }
 }
