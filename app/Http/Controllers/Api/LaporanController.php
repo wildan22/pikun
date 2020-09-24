@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\JurnalDetail;
 use DateTime;
 use App\Perkiraan;
+use App\Rekening;
 use DB;
 
 class LaporanController extends Controller
@@ -78,7 +79,7 @@ class LaporanController extends Controller
             'year'=>'required|min:4|integer',
             'perkiraan_id'=>'required|integer'
         ]);
-        $jurnalDetail = JurnalDetail::where('perkiraan',$request->perkiraan_id)->get();
+        $jurnalDetail = JurnalDetail::where('perkiraan',$request->perkiraan_id)->where()->get();
         $res=[];
         $total = 0;
         $totaldebit = 0;
@@ -171,37 +172,85 @@ class LaporanController extends Controller
     //Menampilkan Laporan Laba Rugi untuk digunakan pada android
     public function showLabaRugi(Request $request){
         $this->validate($request,[
-            'month'=>'required|min:1|integer',
             'year'=>'required|min:4|integer',
         ]);
 
+        //Convert Month Name to Number
+        $monthnum =  date('m', strtotime($request->month));
+        $yearnum = $request->year;
         //Pendapatan(7),Harga Pokok Penjualan(8),Biaya Penjualan(9),Biaya Admin dan Umum(10), Pendapatan Diluar Usaha(11), Biaya Diluar Usaha(12)
         $rekening_id = [7,8,9,10,11,12];
+        $text = ["Pendapatan Bersih","LABA/RUGI KOTOR","Total Biaya Penjualan","Total Admin dan Umum","Total Pendapatan Diluar Usaha","Total Biaya Diluar Usaha"];
+        $totalkeseluruhan = 0;
         $perkiraanid = [];
-        foreach($rekening_id as $rek_id){
+        foreach($rekening_id as $key=>$rek_id){
+            $totalrekening = 0;
+            $data = [];
             $perkiraan = Perkiraan::where('rekening_id',$rek_id)->get();
             foreach($perkiraan as $p){
-                $perkiraanid[] = [
-                    'id'=>$p->id,
-                    'nama'=>$p->nama_perkiraan
+                $tmptotal = 0;
+                $total = 0;
+                $jurnaldetail = JurnalDetail::where('perkiraan',$p->id)->whereHas('Jurnal',function($q) use($monthnum,$yearnum){
+                    $q->where('user_id',auth()->user()->id)->whereMonth('tanggal',$monthnum)->whereYear('tanggal',$yearnum);
+                })->get();
+
+                foreach($jurnaldetail as $jd){
+
+                    if($jd->tipe == "K"){
+                        $tmptotal += $jd->jumlah;
+                    }
+                    else if($jd->tipe == "D"){
+                        $tmptotal -= $jd->jumlah;
+                    }
+                }
+                if($tmptotal<0){
+                    $total = "(".abs($tmptotal).")";
+                }
+                else if($tmptotal>0){
+                    $total = $tmptotal;
+                }
+                $data[] = [
+                    "nama_perkiraan"=>$p->nama_perkiraan,
+                    "jumlah"=>$total,
                 ];
+
+                $totalrekening += $tmptotal;
+
+                #$jurnaldetail->where('perkiraan',$p->id);
             }
+            $totalkeseluruhan += $totalrekening;
+            //Kode Pendapatan
+            if($rek_id == "7"){
+                $pendapatan = $totalrekening;
+            }
+            elseif($rek_id == "8"){
+                $totalrekening = $pendapatan + $totalrekening;
+            }
+
+            if($totalrekening<0){
+                $totalrekening = "(".abs($totalrekening).")";
+            }
+
+            $rek = Rekening::where('id',$rek_id)->first();
+            $json[] = [
+                "rekening"=> $rek->nama_rekening,
+                "text" => $text[$key],
+                "total" => $totalrekening,
+                "perkiraan"=>$data
+            ];
 
         }
 
+        if($totalkeseluruhan < 0){
+            $totalkeseluruhan = "(".abs($totalkeseluruhan).")";
+        }
 
-
-        //Mencari Laba Rugi
-        //Pendapatan - HPP = Laba/Rugi Kotor
-        $jurnalDetail = JurnalDetail::select('perkiraan')->distinct()->get();
-        $perkiraanidnotnull = [];
-        // foreach($jurnalDetail as $jd){
-        //     $perkiraanidnotnull[] =[
-        //         $jd->id
-        //     ];
-        // }
-
-
-        return collect($perkiraanid)->all();
+        return response()->json([
+            "success"=>True,
+            "data"=>collect($json)->all(),
+            "text"=>"Laba/Rugi Bersih",
+            "total_keseluruhan"=>$totalkeseluruhan,
+            #"message"=>$message
+        ],200);
     }
 }
