@@ -128,6 +128,7 @@ class LaporanController extends Controller
                 'jumlah' => $jd->jumlah,
                 'jenis' => $jd->tipe,
                 'keterangan' => $jd->Jurnal->keterangan,
+                'tanggal' => $jd->Jurnal->tanggal,
                 'bulan' => $monthName,
                 'total' => $total
             ];
