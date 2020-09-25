@@ -67,6 +67,9 @@ Route::POST('report/jurnal/view','Api\LaporanController@showJurnalReportAndroidJ
 Route::POST('report/bukubesar/view','Api\LaporanController@showBukuBesarJson')->middleware('auth:api');
 Route::POST('report/neracasaldo/view','Api\LaporanController@showNeracaSaldo')->middleware('auth:api');
 Route::POST('report/labarugi/view','Api\LaporanController@showLabaRugi')->middleware('auth:api');
+Route::POST('report/neraca/view','Api\LaporanController@showNeraca')->middleware('auth:api');
+
+
 
 
 
