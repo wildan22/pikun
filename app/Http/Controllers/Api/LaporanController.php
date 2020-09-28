@@ -80,7 +80,7 @@ class LaporanController extends Controller
             'nama_perkiraan'=>'required'
             #'perkiraan_id'=>'required|integer'
         ]);
-        
+
 
         //Getting Perkiraan Id based nama_perkiraan
         #$perkiraan = Perkiraan::where('nama_perkiraan','like','%'.$request->nama_perkiraan.'%')->first();
@@ -91,7 +91,7 @@ class LaporanController extends Controller
         else{
             $perkiraan_id = 0;
         }
-        
+
 
         //Convert Month Name to Number
         $monthnum =  date('m', strtotime($request->month));
@@ -105,7 +105,7 @@ class LaporanController extends Controller
         //     $q->where('user_id',auth()->user()->id)->whereMonth('tanggal',$monthnum)->whereYear('tanggal',$yearnum);
         // })->get();
 
-        
+
         $res=[];
         $total = 0;
         $totaldebit = 0;
@@ -298,13 +298,69 @@ class LaporanController extends Controller
     //Menampilkan Laporan Neraca
     public function showNeraca(Request $request){
 
-
         //Convert Month Name to Number
         $monthnum =  date('m', strtotime($request->month));
         $yearnum = $request->year;
 
+        $rekening_id = [7,8,9,10,11,12];
+        $totalrabalugi = 0;
+        $perkiraanid = [];
+        foreach($rekening_id as $key=>$rek_id){
+            $totalrekening = 0;
+            $data = [];
+            $perkiraan = Perkiraan::where('rekening_id',$rek_id)->get();
+            foreach($perkiraan as $p){
+                $tmptotal = 0;
+                $total = 0;
+                $jurnaldetail = JurnalDetail::where('perkiraan',$p->id)->whereHas('Jurnal',function($q) use($monthnum,$yearnum){
+                    $q->where('user_id',auth()->user()->id)->whereMonth('tanggal',$monthnum)->whereYear('tanggal',$yearnum);
+                })->get();
+
+                foreach($jurnaldetail as $jd){
+
+                    if($jd->tipe == "K"){
+                        $tmptotal += $jd->jumlah;
+                    }
+                    else if($jd->tipe == "D"){
+                        $tmptotal -= $jd->jumlah;
+                    }
+                }
+                if($tmptotal<0){
+                    $total = "(".abs($tmptotal).")";
+                }
+                else if($tmptotal>0){
+                    $total = $tmptotal;
+                }
+                $data[] = [
+                    "nama_perkiraan"=>$p->nama_perkiraan,
+                    "jumlah"=>$total,
+                ];
+
+                $totalrekening += $tmptotal;
+
+                #$jurnaldetail->where('perkiraan',$p->id);
+            }
+            $totalrabalugi += $totalrekening;
+            //Kode Pendapatan
+
+            if($totalrekening<0){
+                $totalrekening = "(".abs($totalrekening).")";
+            }
+
+        }
+
+        if($totalrabalugi < 0){
+            $totallabarugi = "(".abs($totalrabalugi).")";
+        }
+
+
+
+
 
         $totalkeseluruhan = 0;
+        $totalaktiva = 0;
+        $totalutangmodal = 0;
+
         $perkiraanid = [];
         $text = ["Total Aktiva Lancar","Total Aktiva Tetap","Total Utang Jangka Pendek","Total Utang Jangka Panjang","Total Modal"];
 
@@ -338,7 +394,23 @@ class LaporanController extends Controller
                 $totalrekening += $tmptotal;
 
             }
+
+            if($rek_id == 6){
+                $data[] =[
+                    "nama_perkiraan"=>"Laba / Rugi Bersih",
+                    "jumlah"=>abs($totalrabalugi)
+                ];
+                $totalrekening += abs($totalrabalugi);
+
+            }
+
             $totalkeseluruhan += $totalrekening;
+            if($rek_id == 1 || $rek_id == 2){
+                $totalaktiva += $totalrekening;
+            }
+            else if($rek_id == 4 || $rek_id == 5 || $rek_id == 6){
+                $totalutangmodal += $totalrekening;
+            }
 
 
             $rek = Rekening::where('id',$rek_id)->first();
@@ -358,8 +430,10 @@ class LaporanController extends Controller
         return response()->json([
             "success"=>True,
             $request->month=>collect($json)->all(),
-            "text"=>"Laba/Rugi Bersih",
-            "total_keseluruhan"=>$totalkeseluruhan,
+            "text_a"=>"Total Aktiva",
+            "total_aktiva"=>$totalaktiva,
+            "text_b"=>"Total Utang dan Modal",
+            "total_utang_modal"=>$totalutangmodal,
         ],200);
     }
 }
