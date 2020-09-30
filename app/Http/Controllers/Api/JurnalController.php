@@ -73,6 +73,18 @@ class JurnalController extends Controller
         }
     }
 
+    public function editJurnal(Request $request){
+        $this->validate($request,[
+            'id'=>'required|min:1',
+            'pilihan1' =>'required|min:1',
+            'pilihan2' => 'required|min:1',
+            'keterangan' => 'required|min:1',
+            'nominal' => 'required|min:1'
+        ]);
+        // $edit = Jurnal::where('id',$request->id)
+        //                 ->
+    }
+
 
     public function showJurnalList(Request $request){
         $this->validate($request,[
@@ -81,10 +93,11 @@ class JurnalController extends Controller
         ]);
         $data = [];
 
-        $jurnalList = DB::select('SELECT jurnals.id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2
+        $jurnalList = DB::select('SELECT jurnals.id,jurnals.transaksi_id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2,jenistransaksi.jenis_transaksi as jt
                                 FROM jurnals
                                 INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
                                 INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
+                                INNER JOIN jenis_transaksis as jenistransaksi ON jurnals.transaksi_id = perkiraan2.id
                                 WHERE user_id=?
                                 AND MONTHNAME(tanggal)=?
                                 AND YEAR(tanggal)=?
@@ -92,11 +105,13 @@ class JurnalController extends Controller
 
         foreach($jurnalList as $jl){
             $data[] = [
+                "id_transaksi"=>$jl->id,
                 "tanggal"=>$jl->tanggal,
                 "keterangan"=>$jl->keterangan,
                 "jumlah"=>$jl->jumlah,
                 "perkiraan1"=>$jl->perkiraan1,
-                "perkiraan2"=>$jl->perkiraan2
+                "perkiraan2"=>$jl->perkiraan2,
+                "jenis_transaksi"=>$jl->jt
             ];
 
         }
