@@ -76,13 +76,26 @@ class JurnalController extends Controller
     public function editJurnal(Request $request){
         $this->validate($request,[
             'id'=>'required|min:1',
+            'jenis_transaksi' => 'required|min:1',
             'pilihan1' =>'required|min:1',
             'pilihan2' => 'required|min:1',
             'keterangan' => 'required|min:1',
             'nominal' => 'required|min:1'
         ]);
-        // $edit = Jurnal::where('id',$request->id)
-        //                 ->
+        $edit = Jurnal::where('id',$request->id)
+                        ->update([
+                            'transaksi_id'=>$request->jenis_transaksi,
+                            'perkiraan1_id'=>$request->pilihan1,
+                            'perkiraan2_id'=>$request->pilihan2,
+                            'keterangan'=>$request->keterangan,
+                            'jumlah'=>$request->nominal
+                        ]);
+        if($edit != 0){
+            return response()->json([
+                "success"=>True,
+                "message"=>"Jurnal Berhasil Di Update"
+            ],200);
+        }
     }
 
 

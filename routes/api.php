@@ -61,6 +61,7 @@ Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middle
 Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
 
 Route::POST('jurnal/hapus','Api\JurnalController@deleteJurnal')->middleware('auth:api');
+Route::POST('jurnal/edit','Api\JurnalController@editJurnal')->middleware('auth:api');
 
 
 
