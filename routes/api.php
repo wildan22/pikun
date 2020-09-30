@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* AUTHENTICATION ROUTES */
+/* USER ROUTES */
 Route::post('register','Api\RegisterController@action');
 Route::post('login','Api\LoginController@action');
 Route::get('me','Api\UserController@me')->middleware('auth:api');
@@ -59,6 +59,8 @@ Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:
 Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middleware('auth:api');
 Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');
 Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
+
+Route::POST('jurnal/hapus','Api\JurnalController@deleteJurnal')->middleware('auth:api');
 
 
 

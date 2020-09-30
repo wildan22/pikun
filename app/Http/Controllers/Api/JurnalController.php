@@ -59,7 +59,18 @@ class JurnalController extends Controller
                 "data"=>[]
             ],201);
         }
+    }
 
+    public function deleteJurnal(Request $request){
+        $this->validate($request,[
+            'id'=>'required|min:1'
+        ]);
+
+        $delete = Jurnal::find($request->id);
+        $delete->delete();
+        if($delete != "[]"){
+            return response()->json(null,200);
+        }
     }
 
 
