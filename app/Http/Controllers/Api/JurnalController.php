@@ -66,11 +66,29 @@ class JurnalController extends Controller
             'id'=>'required|min:1'
         ]);
 
-        $delete = Jurnal::find($request->id);
-        $delete->delete();
-        if($delete != "[]"){
-            return response()->json(null,200);
+        $jurnal = Jurnal::find($request->id);
+        if($jurnal != Null){
+            $deleteresponse = $jurnal->delete();
+            if($deleteresponse == True){
+                return response()->json([
+                    "success"=>True,
+                    "message"=>"Jurnal Berhasil Dihapus"
+                ],200);
+            }else{
+                return response()->json([
+                    "success"=>False,
+                    "message"=>"Jurnal Gagal Dihapus"
+                ],400);
+            }
         }
+        else{
+            return response()->json([
+                "success"=>False,
+                "message"=>"Jurnal Tidak Ditemukan/Jurnal sudah dihapus"
+            ],400);
+        }
+
+
     }
 
     public function editJurnal(Request $request){
