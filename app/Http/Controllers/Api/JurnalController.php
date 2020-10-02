@@ -106,7 +106,7 @@ class JurnalController extends Controller
         ]);
         $data = [];
 
-        $jurnalList = DB::select('SELECT jurnals.id,jurnals.transaksi_id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2,jenistransaksi.jenis_transaksi as jt
+        $jurnalList = DB::select('SELECT 'jurnals.id,jurnals.transaksi_id,jurnals.tanggal,jurnals.user_id,jurnals.keterangan,jurnals.jumlah,jurnals.perkiraan1_id,jurnals.perkiraan2_id,perkiraan1.nama_perkiraan as perkiraan1,perkiraan2.nama_perkiraan as perkiraan2,jenistransaksi.jenis_transaksi as jt
                                 FROM jurnals
                                 INNER JOIN perkiraans as perkiraan1 ON jurnals.perkiraan1_id = perkiraan1.id
                                 INNER JOIN perkiraans as perkiraan2 ON jurnals.perkiraan2_id = perkiraan2.id
