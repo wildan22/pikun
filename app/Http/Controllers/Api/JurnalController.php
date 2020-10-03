@@ -66,9 +66,10 @@ class JurnalController extends Controller
             'id'=>'required|min:1'
         ]);
 
-        $jurnal = Jurnal::find($request->id);
+        $jurnal = Jurnal::where('id',$request->id)->where('user_id',auth()->user()->id)->first();
+        print($jurnal);
         if($jurnal != Null){
-            $deleteresponse = $jurnal->delete();
+            $deleteresponse = Jurnal::find($request->id)->delete();
             if($deleteresponse == True){
                 return response()->json([
                     "success"=>True,
@@ -93,6 +94,7 @@ class JurnalController extends Controller
 
     public function editJurnal(Request $request){
         $this->validate($request,[
+            'tanggal'=>'required|date',
             'id'=>'required|min:1',
             'jenis_transaksi' => 'required|min:1',
             'pilihan1' =>'required|min:1',
@@ -100,19 +102,34 @@ class JurnalController extends Controller
             'keterangan' => 'required|min:1',
             'nominal' => 'required|min:1'
         ]);
-        $edit = Jurnal::where('id',$request->id)
-                        ->update([
-                            'transaksi_id'=>$request->jenis_transaksi,
-                            'perkiraan1_id'=>$request->pilihan1,
-                            'perkiraan2_id'=>$request->pilihan2,
-                            'keterangan'=>$request->keterangan,
-                            'jumlah'=>$request->nominal
-                        ]);
-        if($edit != 0){
+        $jurnal = Jurnal::where('id',$request->id)->where('user_id',auth()->user()->id);
+
+        if($jurnal->first() != Null){
+            $edit = $jurnal
+            ->update([
+                'transaksi_id'=>$request->jenis_transaksi,
+                'perkiraan1_id'=>$request->pilihan1,
+                'perkiraan2_id'=>$request->pilihan2,
+                'keterangan'=>$request->keterangan,
+                'jumlah'=>$request->nominal,
+                'tanggal'=>$request->tanggal,
+            ]);
+            if($edit != 0){
+                return response()->json([
+                    "success"=>True,
+                    "message"=>"Jurnal Berhasil Di Update"
+                ],200);
+            }else{
+                return response()->json([
+                    "success"=>False,
+                    "message"=>"Jurnal Gagal Di Update"
+                ],400);
+            }
+        }else{
             return response()->json([
-                "success"=>True,
-                "message"=>"Jurnal Berhasil Di Update"
-            ],200);
+                "success"=>False,
+                "message"=>"Jurnal yang anda maksud tidak ada/sudah di hapus"
+            ],400);
         }
     }
 
@@ -142,8 +159,11 @@ class JurnalController extends Controller
                 "keterangan"=>$jl->keterangan,
                 "jumlah"=>$jl->jumlah,
                 "perkiraan1"=>$jl->perkiraan1,
+                "perkiraan1_id"=>$jl->perkiraan1_id,
                 "perkiraan2"=>$jl->perkiraan2,
-                "jenis_transaksi"=>$jl->jt
+                "perkiraan2_id"=>$jl->perkiraan2_id,
+                "jenis_transaksi"=>$jl->jt,
+                "jenis_transaksi_id"=>$jl->transaksi_id
             ];
 
         }
