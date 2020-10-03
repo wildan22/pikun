@@ -132,7 +132,7 @@ class JurnalController extends Controller
                                 WHERE user_id=?
                                 AND MONTHNAME(tanggal)=?
                                 AND YEAR(tanggal)=?
-                                AND deleted_at IS NOT NULL
+                                AND jurnals.deleted_at IS NOT NULL
                                 ORDER BY tanggal',[auth()->user()->id,$request->month,$request->year]);
 
         foreach($jurnalList as $jl){
