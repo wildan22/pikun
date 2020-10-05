@@ -67,7 +67,6 @@ class JurnalController extends Controller
         ]);
 
         $jurnal = Jurnal::where('id',$request->id)->where('user_id',auth()->user()->id)->first();
-        print($jurnal);
         if($jurnal != Null){
             $deleteresponse = Jurnal::find($request->id)->delete();
             if($deleteresponse == True){
