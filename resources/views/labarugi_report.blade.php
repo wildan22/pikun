@@ -31,6 +31,7 @@
                         <tr>
                             <td>{{ $p['nama_perkiraan']}}</td>
                             <td class="text-right">{{number_format($p['jumlah'],2,',','.')}}</td>
+                            <td class="text-right">{{$p['jumlah'],2,',','.')}}</td>
                         </tr>
                         @endforeach
                         <tr>
