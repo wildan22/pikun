@@ -37,11 +37,13 @@
                         <tr>
                             <td style="font-weight:bold">{{ $d["text"] }}</td>
                             {{-- <td style="font-weight:bold" class="text-right">{{number_format($d['total'],2,',','.')}}</td> --}}
+                            <td style="font-weight:bold" class="text-right">{{$d['total']}}</td>
                         </tr>
                     @endforeach
                     <tr class="table-active">
                         <td style="font-weight:bold">{{$response['text']}}</td>
                         {{-- <td style="font-weight:bold" class="text-right">{{number_format($response['total_keseluruhan'],2,',','.')}}</td> --}}
+                        <td style="font-weight:bold" class="text-right">{{$response['total_keseluruhan']}}</td>
                     </tr>
                 @endforeach
                 
