@@ -57,11 +57,20 @@ Route::get('mapping/debit/{id}','Api\MappingController@getRekeningDebit')->middl
 /**JURNAL ROUTES */
 Route::post('jurnal/create','Api\JurnalController@addJurnal')->middleware('auth:api');
 Route::post('jurnal/lihatjurnal','Api\JurnalController@showJurnalList')->middleware('auth:api');
-Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');
 Route::GET('jurnaldetail/{id}','Api\JurnalController@showSpecificJurnalDetail')->middleware('auth:api');
 
 Route::POST('jurnal/hapus','Api\JurnalController@deleteJurnal')->middleware('auth:api');
 Route::POST('jurnal/edit','Api\JurnalController@editJurnal')->middleware('auth:api');
+
+
+/** PDF REPORTING */
+Route::POST('jurnal/pdf','Api\JurnalDetailController@generateJurnalPDF')->middleware('auth:api');
+Route::POST('neracasaldo/pdf','Api\JurnalDetailController@generateNeracaSaldoPDF')->middleware('auth:api');
+Route::POST('bukubesar/pdf','Api\JurnalDetailController@generateBukuBesarPDF')->middleware('auth:api');
+Route::POST('labarugi/pdf','Api\JurnalDetailController@generateLabaRugiPDF')->middleware('auth:api');
+Route::POST('neraca/pdf','Api\JurnalDetailController@generateNeracaPDF')->middleware('auth:api');
+
+
 
 
 
