@@ -30,8 +30,8 @@
                         @foreach($d['perkiraan'] as $p)
                         <tr>
                             <td>{{ $p['nama_perkiraan']}}</td>
-                            <td class="text-right">{{number_format($p['jumlah'],2,',','.')}}</td>
-                            <td class="text-right">{{$p['jumlah'],2,',','.')}}</td>
+                            {{-- <td class="text-right">{{number_format($p['jumlah'],2,',','.')}}</td> --}}
+                            <td class="text-right">{{$p['jumlah']}}</td>
                         </tr>
                         @endforeach
                         <tr>
