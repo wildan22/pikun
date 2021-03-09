@@ -15,7 +15,7 @@ class LaporanController extends Controller
 
     public function showJurnalReportAndroidJson(Request $request){
         $this->validate($request,[
-            #'month'=>'required|min:1|str',
+            'month'=>'required|min:1|str',
             'year'=>'required|min:4|integer'
         ]);
 

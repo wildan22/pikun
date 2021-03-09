@@ -18,7 +18,7 @@ class JurnalDetailController extends Controller
 {
     public function generateJurnalPDF(Request $request){
         $this->validate($request,[
-            'month'=>'required|min:1|integer|max:12',
+            'month'=>'required|min:1|max:12',
             'year'=>'required|integer|min:1'
         ]);
         $monthname =  date('F', strtotime($request->month));
@@ -27,7 +27,7 @@ class JurnalDetailController extends Controller
                                         INNER JOIN jurnals ON jurnal_details.jurnal_id=jurnals.id
                                         INNER JOIN perkiraans ON jurnal_details.perkiraan=perkiraans.id
                                         WHERE user_id=?
-                                        AND MONTH(tanggal)=?
+                                        AND MONTHNAME(tanggal)=?
                                         AND YEAR(tanggal)=?',[auth()->user()->id,$request->month,$request->year]);
 
         $perusahaanDetail = User::where('id',auth()->user()->id)->first();
