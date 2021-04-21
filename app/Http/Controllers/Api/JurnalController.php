@@ -11,6 +11,7 @@ use Auth;
 use PDF;
 use DB;
 use DateTime;
+use Carbon\Carbon;
 
 class JurnalController extends Controller
 {
@@ -195,7 +196,6 @@ class JurnalController extends Controller
     }
 
     public function getRekeningId($perkiraan_id){
-
         if($perkiraan != "[]"){
             return $this->$perkiraan->rekening_id;
         }
@@ -282,6 +282,34 @@ class JurnalController extends Controller
             $res['message'] = "Jurnal Gagal Ditambahkan";
             return $res;
         }
+    }
+
+    public function tampilkanDataTahun(Request $request){
+        $year = DB::table('jurnals')
+            ->select('tanggal')
+            ->where('user_id',auth()->user()->id)
+            ->where('deleted_at',NULL)
+            ->groupBy(DB::raw('YEAR(tanggal) DESC'))
+            ->get();
+
+        if($year != "[]"){
+            $res['success'] = true;
+            $res['message'] = "Data Berhasil Diambil";
+            
+            //CREATING ARRAY TAHUN
+            foreach($year as $y){
+                $tmpyear = date('Y', strtotime($y->tanggal));
+                #$res['tahun'] = $tmpyear;
+                $tahun[] = $tmpyear;
+            }
+            $res['tahun'] = $tahun;
+            
+        }else{
+            $res['success'] = true;
+            $res['message'] = "Data Tahun Kosong, Menampilkan Tahun ini";
+            $res['tahun'] = date("Y");
+        }
+        return response($res,200);
     }
 
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,12 +14,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* USER ROUTES */
+
+/*
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/home');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+*/
+
+Route::get('email/verify/{id}/{hash}', 'Api\VerificationController@verify')->name('verification.verify');
+Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
+Route::post('password/email', 'Api\ForgotPasswordController@forgot');
+Route::post('login/google','Api\LoginController@loginWithGoogleToken');
 Route::post('register','Api\RegisterController@action');
 Route::post('login','Api\LoginController@action');
+
+
+
+/* USER ROUTES */
 Route::get('me','Api\UserController@me')->middleware('auth:api');
 Route::post('updateinfo','Api\UserController@updateInfo')->middleware('auth:api');
 Route::delete('closeaccount','Api\UserController@closeAccount')->middleware('auth:api');
+
+
 
 //Perusahaan Routes
 Route::post('tambahperusahaan','Api\UserController@addPerusahaan')->middleware('auth:api');
@@ -82,7 +100,8 @@ Route::POST('report/labarugi/view','Api\LaporanController@showLabaRugi')->middle
 Route::POST('report/neraca/view','Api\LaporanController@showNeraca')->middleware('auth:api');
 
 
-
+/** FUNGSI LAIN */
+Route::GET('jurnal/get_tahun_jurnal','Api\JurnalController@tampilkanDataTahun')->middleware('auth:api');
 
 
 /** TAMBAH JURNAL MANUAL */

@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('email/verify/{id}/{hash}', 'Api\VerificationController@verify')->name('verification.verify');
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+#Auth::routes(['verify'=>true]);
+
+#Route::get('/home', 'HomeController@index')->name('home');

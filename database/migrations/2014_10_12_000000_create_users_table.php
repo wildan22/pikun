@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('nama_perusahaan')->default('-');
+            $table->string('nama_perusahaan')->default('SAKU - Solusi Akuntansi UMKM - Ubah Pada Menu Setting');
             $table->string('alamat_perusahaan')->default('-');
             $table->string('telepon_perusahaan')->default('-');
             $table->string('email_perusahaan')->default('-');
