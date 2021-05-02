@@ -56,7 +56,7 @@ class LoginController extends Controller
         
         if($response->successful()){
             ///VALIDATE APP ISSUER
-            if($response['issued_to'] == env('GOOGLE_CLIENT_ID')){
+            if($response['issued_to'] == env('GOOGLE_CLIENT_ID') or $response['issued_to'] == env('ANDROID_CLIENT_ID')){
                 $user = User::where('email', '=', $response['email'])->first();
                 /**KONDISI KETIKA USER BELUM TERDAFTAR */
                 
